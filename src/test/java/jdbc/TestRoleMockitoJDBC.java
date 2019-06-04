@@ -53,39 +53,43 @@ public class TestRoleMockitoJDBC {
     @DisplayName("Create in the database")
     void createRoleTest() {
         when(someRoleJDBC.readRoleParametric(someInsertRole.id)).thenReturn(someInsertRole);
-        //someRoleJDBC.addRoleParametric(someInsertRole);
+        someRoleJDBC.addRoleParametric(someInsertRole);
         someReadRole = someRoleJDBC.readRoleParametric(someInsertRole.id);
-        assertEquals(true, someReadRole.equals(someInsertRole), "Object was not created");
+        assertEquals(someInsertRole, someReadRole, "Object was not created");
+        someRoleJDBC.deleteRoleParametric(someInsertRole);
     }
 
     @Test
     @DisplayName("Read from the database")
     void readRoleTest() {
         when(someRoleJDBC.readRoleParametric(someInsertRole.id)).thenReturn(someInsertRole);
-//        roleJDBC.addRoleParametric(someInsertRole);
+        someRoleJDBC.addRoleParametric(someInsertRole);
         someReadRole = someRoleJDBC.readRoleParametric(someInsertRole.id);
-        assertEquals(true, someReadRole.equals(someInsertRole), "Object was not read");
+        assertEquals(someInsertRole, someReadRole, "Object was not read");
         System.out.println("Reading database is succeeded");
+        someRoleJDBC.deleteRoleParametric(someInsertRole);
     }
 
     @Test
     @DisplayName("Update to the database")
     void updateRoleTest() {
-        when(someRoleJDBC.readRoleParametric(someUpdateRole.id)).thenReturn(someInsertRole);
-//        roleJDBC.addRoleParametric(someInsertRole);
-//        roleJDBC.updateRoleParametric(someUpdateRole);;
+        when(someRoleJDBC.readRoleParametric(someUpdateRole.id)).thenReturn(someUpdateRole);
+        someRoleJDBC.addRoleParametric(someInsertRole);
+        someRoleJDBC.updateRoleParametric(someUpdateRole);;
         someReadRole = someRoleJDBC.readRoleParametric(someUpdateRole.id);
-        assertEquals(true, someReadRole.equals(someInsertRole), "Object was not deleted");
+        assertEquals(someUpdateRole, someReadRole, "Object was not deleted");
         System.out.println("Updating database is succeeded");
+        someRoleJDBC.deleteRoleParametric(someUpdateRole);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteRoleTest() {
-        when(someRoleJDBC.readRoleParametric(someUpdateRole.id)).thenReturn(someInsertRole);
-//        roleJDBC.deleteRoleParametric(someUpdateRole);
+        when(someRoleJDBC.readRoleParametric(someUpdateRole.id)).thenReturn(null);
+        someRoleJDBC.addRoleParametric(someUpdateRole);
+        someRoleJDBC.deleteRoleParametric(someUpdateRole);
         someReadRole = someRoleJDBC.readRoleParametric(someUpdateRole.id);
-        assertNotEquals(true, someUpdateRole.equals(someReadRole), "Object was not deleted");
+        assertNotEquals(someUpdateRole, someReadRole, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }
 

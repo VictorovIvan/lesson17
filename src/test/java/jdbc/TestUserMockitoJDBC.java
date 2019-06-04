@@ -42,7 +42,7 @@ public class TestUserMockitoJDBC {
 
     @BeforeEach
     void beforeEach() {
-        this.userJDBC = spy(new UserJDBC(connectDataBase));
+        this.userJDBC = new UserJDBC(connectDataBase);
         this.someInsertUser.id = 1;
     }
 
@@ -57,39 +57,43 @@ public class TestUserMockitoJDBC {
     @DisplayName("Create in the database")
     void createUserTest() {
         when(someUserJDBC.readUserParametric(someInsertUser.id)).thenReturn(someInsertUser);
-//        userJDBC.addUserParametric(someInsertUser);
+        someUserJDBC.addUserParametric(someInsertUser);
         someReadUser = someUserJDBC.readUserParametric(someInsertUser.id);
-        assertEquals(true, someReadUser.equals(someInsertUser), "Object was not created");
+        assertEquals(someInsertUser, someReadUser, "Object was not created");
+        someUserJDBC.deleteUserParametric(someInsertUser);
     }
 
     @Test
     @DisplayName("Read from the database")
     void readUserTest() {
         when(someUserJDBC.readUserParametric(someInsertUser.id)).thenReturn(someInsertUser);
-//        userJDBC.addUserParametric(someInsertUser);
+        someUserJDBC.addUserParametric(someInsertUser);
         someReadUser = someUserJDBC.readUserParametric(someInsertUser.id);
         assertEquals(true, someReadUser.equals(someInsertUser), "Object was not read");
         System.out.println("Reading database is succeeded");
+        someUserJDBC.deleteUserParametric(someInsertUser);
     }
 
     @Test
     @DisplayName("Update to the database")
     void updateUserTest() {
-        when(someUserJDBC.readUserParametric(someUpdateUser.id)).thenReturn(someInsertUser);
-//        userJDBC.addUserParametric(someInsertUser);
-//        userJDBC.updateUserParametric(someUpdateUser);
+        when(someUserJDBC.readUserParametric(someUpdateUser.id)).thenReturn(someUpdateUser);
+        someUserJDBC.addUserParametric(someInsertUser);
+        someUserJDBC.updateUserParametric(someUpdateUser);
         someReadUser = someUserJDBC.readUserParametric(someUpdateUser.id);
-        assertEquals(true, someReadUser.equals(someInsertUser), "Object was not deleted");
+        assertEquals(someUpdateUser, someReadUser, "Object was not deleted");
         System.out.println("Updating database is succeeded");
+        someUserJDBC.deleteUserParametric(someUpdateUser);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteUserTest() {
-        when(someUserJDBC.readUserParametric(someUpdateUser.id)).thenReturn(someInsertUser);
-//        userJDBC.deleteUserParametric(someUpdateUser);
+        when(someUserJDBC.readUserParametric(someUpdateUser.id)).thenReturn(null);
+        someUserJDBC.addUserParametric(someUpdateUser);
+        userJDBC.deleteUserParametric(someUpdateUser);
         someReadUser = someUserJDBC.readUserParametric(someUpdateUser.id);
-        assertNotEquals(true, someUpdateUser.equals(someReadUser), "Object was not deleted");
+        assertNotEquals(someUpdateUser, someReadUser, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }
 

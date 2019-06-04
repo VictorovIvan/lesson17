@@ -54,6 +54,7 @@ public class TestUserJDBC {
         someReadtUser = userJDBC.readUserParametric(someInsertUser.id);
         assertEquals(someInsertUser, someReadtUser, "Object was not created");
         System.out.println("Insert to database is succeeded");
+        userJDBC.deleteUserParametric(someInsertUser);
     }
 
     @Test
@@ -61,8 +62,9 @@ public class TestUserJDBC {
     void readUserTest() {
         userJDBC.addUserParametric(someInsertUser);
         someReadtUser = userJDBC.readUserParametric(someInsertUser.id);
-        assertEquals(true, someReadtUser.equals(someInsertUser), "Object was not read");
+        assertEquals(someInsertUser, someReadtUser, "Object was not read");
         System.out.println("Reading database is succeeded");
+        userJDBC.deleteUserParametric(someInsertUser);
     }
 
     @Test
@@ -73,14 +75,16 @@ public class TestUserJDBC {
         someReadtUser = userJDBC.readUserParametric(someUpdateUser.id);
         assertEquals(someUpdateUser, someReadtUser, "Object was not deleted");
         System.out.println("Updating database is succeeded");
+        userJDBC.deleteUserParametric(someUpdateUser);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteUserTest() {
-        userJDBC.deleteUserParametric(someUpdateUser);
-        someReadtUser = userJDBC.readUserParametric(someUpdateUser.id);
-        assertNotEquals(true, someUpdateUser.equals(someReadtUser), "Object was not deleted");
+        userJDBC.addUserParametric(someInsertUser);
+        userJDBC.deleteUserParametric(someInsertUser);
+        someReadtUser = userJDBC.readUserParametric(someInsertUser.id);
+        assertNotEquals(someInsertUser, someReadtUser, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }
 

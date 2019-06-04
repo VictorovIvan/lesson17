@@ -50,8 +50,9 @@ public class TestRoleJDBC {
     void createRoleTest() {
         roleJDBC.addRoleParametric(someInsertRole);
         someReadRole = roleJDBC.readRoleParametric(someInsertRole.id);
-        assertEquals(true, someReadRole.equals(someInsertRole), "Object was not created");
+        assertEquals(someInsertRole, someReadRole, "Object was not created");
         System.out.println("Insert to database is succeeded");
+        roleJDBC.deleteRoleParametric(someInsertRole);
     }
 
     @Test
@@ -59,8 +60,9 @@ public class TestRoleJDBC {
     void readRoleTest() {
         roleJDBC.addRoleParametric(someInsertRole);
         someReadRole = roleJDBC.readRoleParametric(someInsertRole.id);
-        assertEquals(true, someReadRole.equals(someInsertRole), "Object was not read");
+        assertEquals(someInsertRole, someReadRole, "Object was not read");
         System.out.println("Reading database is succeeded");
+        roleJDBC.deleteRoleParametric(someInsertRole);
     }
 
     @Test
@@ -69,16 +71,18 @@ public class TestRoleJDBC {
         roleJDBC.addRoleParametric(someInsertRole);
         roleJDBC.updateRoleParametric(someUpdateRole);
         someReadRole = roleJDBC.readRoleParametric(someUpdateRole.id);
-        assertEquals(true, someReadRole.equals(someUpdateRole), "Object was not deleted");
+        assertEquals(someUpdateRole, someReadRole, "Object was not deleted");
         System.out.println("Updating database is succeeded");
+        roleJDBC.deleteRoleParametric(someUpdateRole);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteRoleTest() {
-        roleJDBC.deleteRoleParametric(someUpdateRole);
-        someReadRole = roleJDBC.readRoleParametric(someUpdateRole.id);
-        assertNotEquals(true, someUpdateRole.equals(someReadRole), "Object was not deleted");
+        roleJDBC.addRoleParametric(someInsertRole);
+        roleJDBC.deleteRoleParametric(someInsertRole);
+        someReadRole = roleJDBC.readRoleParametric(someInsertRole.id);
+        assertNotEquals(someInsertRole, someReadRole, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }
 
