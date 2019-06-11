@@ -1,4 +1,4 @@
-import jdbc.ConnectDataBase;
+import jdbc.DBConnector;
 import jdbc.UserJDBC;
 import object.User;
 import org.junit.jupiter.api.*;
@@ -31,7 +31,7 @@ public class TestUserJDBC {
 
     @BeforeAll
     static void init() {
-        connectDataBase = ConnectDataBase.connectionDataBase(null);
+        connectDataBase = DBConnector.getConnection();
     }
 
     @BeforeEach

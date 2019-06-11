@@ -1,4 +1,4 @@
-import jdbc.ConnectDataBase;
+import jdbc.DBConnector;
 import jdbc.UserRoleJDBC;
 import object.UserRole;
 import org.junit.jupiter.api.*;
@@ -33,7 +33,7 @@ public class TestUserRoleMockitoJDBC {
 
     @BeforeAll
     static void init() {
-        connectDataBase = ConnectDataBase.connectionDataBase(null);
+        connectDataBase = DBConnector.getConnection();
     }
 
     @BeforeEach

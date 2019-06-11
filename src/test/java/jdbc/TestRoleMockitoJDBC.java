@@ -1,4 +1,4 @@
-import jdbc.ConnectDataBase;
+import jdbc.DBConnector;
 import jdbc.RoleJDBC;
 import object.Role;
 import org.junit.jupiter.api.*;
@@ -9,7 +9,8 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /*
  * Задание1
@@ -33,7 +34,7 @@ public class TestRoleMockitoJDBC {
 
     @BeforeAll
     static void init() {
-        connectDataBase = ConnectDataBase.connectionDataBase(null);
+        connectDataBase = DBConnector.getConnection();
     }
 
     @BeforeEach

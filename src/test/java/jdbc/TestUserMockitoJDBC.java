@@ -1,4 +1,4 @@
-import jdbc.ConnectDataBase;
+import jdbc.DBConnector;
 import jdbc.UserJDBC;
 import object.User;
 import org.junit.jupiter.api.*;
@@ -37,7 +37,7 @@ public class TestUserMockitoJDBC {
 
     @BeforeAll
     static void init() {
-        connectDataBase = spy(ConnectDataBase.connectionDataBase(null));
+        connectDataBase = spy(DBConnector.getConnection());
     }
 
     @BeforeEach

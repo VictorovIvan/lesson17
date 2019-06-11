@@ -1,4 +1,4 @@
-import jdbc.ConnectDataBase;
+import jdbc.DBConnector;
 import jdbc.RoleJDBC;
 import object.Role;
 import org.junit.jupiter.api.*;
@@ -29,7 +29,7 @@ public class TestRoleJDBC {
 
     @BeforeAll
     static void init() {
-        connectDataBase = ConnectDataBase.connectionDataBase(null);
+        connectDataBase = DBConnector.getConnection();
     }
 
     @BeforeEach
