@@ -10,6 +10,7 @@ import java.sql.SQLException;
 /**
  * Class RoleJDBC
  */
+//TODO JDBC - лишнее уточнение, т.к. других вариантов нет
 public class RoleJDBC {
     private Connection connectDataBase;
 
@@ -27,8 +28,10 @@ public class RoleJDBC {
      *
      * @param role Object role
      */
+    //TODO в публичном методе вариант исполнения (parametric) лучше сделать входным параметром, и в зависимости от него вызывать один из приватных методов
     public void addRoleParametric(Role role) {
         if (role.name.equals("Administration")) {
+            //TODO объединить блоки try
             try {
                 PreparedStatement prepStatement = connectDataBase.prepareStatement("INSERT INTO \"public\".\"ROLE\" VALUES (?, 'Administration', ?)");
                 handlerPrepareStatement(prepStatement, role);
@@ -64,6 +67,7 @@ public class RoleJDBC {
      * @param roleHandler          Object role
      * @throws SQLException An exception that provides information on a database access error or other errors.
      */
+    //TODO название метода - глагол
     private void handlerPrepareStatement(PreparedStatement prepHandlerStatement, Role roleHandler) {
         try {
             prepHandlerStatement.setInt(1, roleHandler.id);
@@ -79,6 +83,8 @@ public class RoleJDBC {
      *
      * @return
      */
+    //TODO в публичных методах уточнение Parametric - лишние детали реализации, должны быть скрыты (инкапсуляция)
+    //TODO тем более, если других вариантов нет
     public Role readRoleParametric(Integer queryToRead) {
         Role roleRead = null;
         Role queryRole = null;
@@ -88,6 +94,7 @@ public class RoleJDBC {
             prepStatement.setInt(1, queryToRead);
             try (ResultSet resultSet = prepStatement.executeQuery();) {
                 if (resultSet.next()) {
+                    //TODO здесь можно сделать статический инициализатор Role.fromResultSet(), но этот подход применяется не везде, зависит от практики на проекте
                     queryRole = new Role(resultSet.getInt("id"),
                             resultSet.getString("name"),
                             resultSet.getString("description"));
