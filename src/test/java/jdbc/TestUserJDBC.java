@@ -1,5 +1,5 @@
 import jdbc.DBConnector;
-import jdbc.UserJDBC;
+import jdbc.UserDAO;
 import object.User;
 import org.junit.jupiter.api.*;
 
@@ -18,16 +18,16 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * Подготовку данных для CRUD операций производить в методе Init использую @Before
  *
  * Задание 2
- * Использую Spy и Mockito создать заглушки для интерфейса JDBC
+ * Использую Spy и Mockito создать заглушки для интерфейса DAO
  */
-public class TestUserJDBC {
-    LocalDate localDate = LocalDate.of(1950, Month.DECEMBER, 30);
+class TestUserJDBC {
+    private LocalDate localDate = LocalDate.of(1950, Month.DECEMBER, 30);
     private User someInsertUser = new User(1, "ABC", localDate, 1, "London", "abra@cadab.ra", "Somebody Insert user");
     private User someUpdateUser = new User(1, "EFG", localDate, 1, "Agraba", "abra@taram.ba", "Somebody Update user");
     private User someReadtUser = new User(0, "", localDate, 0, "", "", "");
 
-    UserJDBC userJDBC;
-    static Connection connectDataBase;
+    private UserDAO userDAO;
+    private static Connection connectDataBase;
 
     @BeforeAll
     static void init() {
@@ -36,7 +36,7 @@ public class TestUserJDBC {
 
     @BeforeEach
     void beforeEach() {
-        this.userJDBC = new UserJDBC(connectDataBase);
+        this.userDAO = new UserDAO(connectDataBase);
         this.someInsertUser.id = 1;
     }
 
@@ -50,40 +50,40 @@ public class TestUserJDBC {
     @Test
     @DisplayName("Create in the database")
     void createUserTest() {
-        userJDBC.addUserParametric(someInsertUser);
-        someReadtUser = userJDBC.readUserParametric(someInsertUser.id);
+        userDAO.addUser(someInsertUser);
+        someReadtUser = userDAO.readUser(someInsertUser.id);
         assertEquals(someInsertUser, someReadtUser, "Object was not created");
         System.out.println("Insert to database is succeeded");
-        userJDBC.deleteUserParametric(someInsertUser);
+        userDAO.deleteUser(someInsertUser);
     }
 
     @Test
     @DisplayName("Read from the database")
     void readUserTest() {
-        userJDBC.addUserParametric(someInsertUser);
-        someReadtUser = userJDBC.readUserParametric(someInsertUser.id);
+        userDAO.addUser(someInsertUser);
+        someReadtUser = userDAO.readUser(someInsertUser.id);
         assertEquals(someInsertUser, someReadtUser, "Object was not read");
         System.out.println("Reading database is succeeded");
-        userJDBC.deleteUserParametric(someInsertUser);
+        userDAO.deleteUser(someInsertUser);
     }
 
     @Test
     @DisplayName("Update to the database")
     void updateUserTest() {
-        userJDBC.addUserParametric(someInsertUser);
-        userJDBC.updateUserParametric(someUpdateUser);
-        someReadtUser = userJDBC.readUserParametric(someUpdateUser.id);
+        userDAO.addUser(someInsertUser);
+        userDAO.updateUser(someUpdateUser);
+        someReadtUser = userDAO.readUser(someUpdateUser.id);
         assertEquals(someUpdateUser, someReadtUser, "Object was not deleted");
         System.out.println("Updating database is succeeded");
-        userJDBC.deleteUserParametric(someUpdateUser);
+        userDAO.deleteUser(someUpdateUser);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteUserTest() {
-        userJDBC.addUserParametric(someInsertUser);
-        userJDBC.deleteUserParametric(someInsertUser);
-        someReadtUser = userJDBC.readUserParametric(someInsertUser.id);
+        userDAO.addUser(someInsertUser);
+        userDAO.deleteUser(someInsertUser);
+        someReadtUser = userDAO.readUser(someInsertUser.id);
         assertNotEquals(someInsertUser, someReadtUser, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }

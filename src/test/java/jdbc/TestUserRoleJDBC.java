@@ -1,5 +1,5 @@
 import jdbc.DBConnector;
-import jdbc.UserRoleJDBC;
+import jdbc.UserRoleDAO;
 import object.UserRole;
 import org.junit.jupiter.api.*;
 
@@ -16,15 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * Подготовку данных для CRUD операций производить в методе Init использую @Before
  *
  * Задание 2
- * Использую Spy и Mockito создать заглушки для интерфейса JDBC
+ * Использую Spy и Mockito создать заглушки для интерфейса DAO
  */
-public class TestUserRoleJDBC {
-    UserRole someInsertUserRole = new UserRole(1, 0, 0);
-    UserRole someUpdateUserRole = new UserRole(1, 5, 5);
-    UserRole someReadUserRole = new UserRole(0, 0, 0);
+class TestUserRoleJDBC {
+    private UserRole someInsertUserRole = new UserRole(1, 0, 0);
+    private UserRole someUpdateUserRole = new UserRole(1, 5, 5);
+    private UserRole someReadUserRole = new UserRole(0, 0, 0);
 
-    UserRoleJDBC userRoleJDBC;
-    static Connection connectDataBase;
+    private UserRoleDAO userRoleDAO;
+    private static Connection connectDataBase;
 
     @BeforeAll
     static void init() {
@@ -33,7 +33,7 @@ public class TestUserRoleJDBC {
 
     @BeforeEach
     void beforeEach() {
-        this.userRoleJDBC = new UserRoleJDBC(connectDataBase);
+        this.userRoleDAO = new UserRoleDAO(connectDataBase);
         this.someInsertUserRole.id = 1;
     }
 
@@ -47,40 +47,40 @@ public class TestUserRoleJDBC {
     @Test
     @DisplayName("Create in the database")
     void createUserTest() {
-        userRoleJDBC.addUserRoleParametric(someInsertUserRole);
-        someReadUserRole = userRoleJDBC.readUserRoleParametric(someInsertUserRole.id);
+        userRoleDAO.addUserRole(someInsertUserRole);
+        someReadUserRole = userRoleDAO.readUserRole(someInsertUserRole.id);
         assertEquals(someInsertUserRole, someReadUserRole, "Object was not created");
         System.out.println("Insert to database is succeeded");
-        userRoleJDBC.deleteUserRoleParametric(someInsertUserRole);
+        userRoleDAO.deleteUserRole(someInsertUserRole);
     }
 
     @Test
     @DisplayName("Read from the database")
     void readUserTest() {
-        userRoleJDBC.addUserRoleParametric(someInsertUserRole);
-        someReadUserRole = userRoleJDBC.readUserRoleParametric(someInsertUserRole.id);
+        userRoleDAO.addUserRole(someInsertUserRole);
+        someReadUserRole = userRoleDAO.readUserRole(someInsertUserRole.id);
         assertEquals(someInsertUserRole, someReadUserRole, "Object was not read");
         System.out.println("Reading database is succeeded");
-        userRoleJDBC.deleteUserRoleParametric(someInsertUserRole);
+        userRoleDAO.deleteUserRole(someInsertUserRole);
     }
 
     @Test
     @DisplayName("Update to the database")
     void updateUserTest() {
-        userRoleJDBC.addUserRoleParametric(someInsertUserRole);
-        userRoleJDBC.updateUserParametric(someUpdateUserRole);
-        someReadUserRole = userRoleJDBC.readUserRoleParametric(someUpdateUserRole.id);
+        userRoleDAO.addUserRole(someInsertUserRole);
+        userRoleDAO.updateUser(someUpdateUserRole);
+        someReadUserRole = userRoleDAO.readUserRole(someUpdateUserRole.id);
         assertEquals(someUpdateUserRole, someReadUserRole, "Object was not deleted");
         System.out.println("Updating database is succeeded");
-        userRoleJDBC.deleteUserRoleParametric(someUpdateUserRole);
+        userRoleDAO.deleteUserRole(someUpdateUserRole);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteUserRoleTest() {
-        userRoleJDBC.addUserRoleParametric(someInsertUserRole);
-        userRoleJDBC.deleteUserRoleParametric(someInsertUserRole);
-        someReadUserRole = userRoleJDBC.readUserRoleParametric(someInsertUserRole.id);
+        userRoleDAO.addUserRole(someInsertUserRole);
+        userRoleDAO.deleteUserRole(someInsertUserRole);
+        someReadUserRole = userRoleDAO.readUserRole(someInsertUserRole.id);
         assertNotEquals(someInsertUserRole, someReadUserRole, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }

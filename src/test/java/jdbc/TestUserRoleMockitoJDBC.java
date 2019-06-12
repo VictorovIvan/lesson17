@@ -1,5 +1,5 @@
 import jdbc.DBConnector;
-import jdbc.UserRoleJDBC;
+import jdbc.UserRoleDAO;
 import object.UserRole;
 import org.junit.jupiter.api.*;
 import org.mockito.Spy;
@@ -19,15 +19,15 @@ import static org.mockito.Mockito.when;
  * Подготовку данных для CRUD операций производить в методе Init использую @Before
  *
  * Задание 2
- * Использую Spy и Mockito создать заглушки для интерфейса JDBC
+ * Использую Spy и Mockito создать заглушки для интерфейса DAO
  */
-public class TestUserRoleMockitoJDBC {
-    UserRole someInsertUserRole = new UserRole(1, 0, 0);
-    UserRole someUpdateUserRole = new UserRole(1, 5, 5);
-    UserRole someReadUserRole = new UserRole(0, 0, 0);
-    private UserRoleJDBC someUserRoleJDBC = mock(UserRoleJDBC.class);
+class TestUserRoleMockitoJDBC {
+    private UserRole someInsertUserRole = new UserRole(1, 0, 0);
+    private UserRole someUpdateUserRole = new UserRole(1, 5, 5);
+    private UserRole someReadUserRole = new UserRole(0, 0, 0);
+    private UserRoleDAO someUserRoleDAO = mock(UserRoleDAO.class);
     @Spy
-    UserRoleJDBC userRoleJDBC;
+    UserRoleDAO userRoleDAO;
     @Spy
     static Connection connectDataBase;
 
@@ -38,7 +38,7 @@ public class TestUserRoleMockitoJDBC {
 
     @BeforeEach
     void beforeEach() {
-        this.userRoleJDBC = new UserRoleJDBC(connectDataBase);
+        this.userRoleDAO = new UserRoleDAO(connectDataBase);
         this.someInsertUserRole.id = 1;
     }
 
@@ -52,43 +52,43 @@ public class TestUserRoleMockitoJDBC {
     @Test
     @DisplayName("Create in the database")
     void createUserTest() {
-        when(someUserRoleJDBC.readUserRoleParametric(someInsertUserRole.id)).thenReturn(someInsertUserRole);
-        someUserRoleJDBC.addUserRoleParametric(someInsertUserRole);
-        someReadUserRole = someUserRoleJDBC.readUserRoleParametric(someInsertUserRole.id);
+        when(someUserRoleDAO.readUserRole(someInsertUserRole.id)).thenReturn(someInsertUserRole);
+        someUserRoleDAO.addUserRole(someInsertUserRole);
+        someReadUserRole = someUserRoleDAO.readUserRole(someInsertUserRole.id);
         assertEquals(someInsertUserRole, someReadUserRole, "Object was not created");
-        someUserRoleJDBC.deleteUserRoleParametric(someInsertUserRole);
+        someUserRoleDAO.deleteUserRole(someInsertUserRole);
     }
 
     @Test
     @DisplayName("Read from the database")
     void readUserTest() {
-        when(someUserRoleJDBC.readUserRoleParametric(someInsertUserRole.id)).thenReturn(someInsertUserRole);
-        someUserRoleJDBC.addUserRoleParametric(someInsertUserRole);
-        someReadUserRole = someUserRoleJDBC.readUserRoleParametric(someInsertUserRole.id);
+        when(someUserRoleDAO.readUserRole(someInsertUserRole.id)).thenReturn(someInsertUserRole);
+        someUserRoleDAO.addUserRole(someInsertUserRole);
+        someReadUserRole = someUserRoleDAO.readUserRole(someInsertUserRole.id);
         assertEquals(someInsertUserRole, someReadUserRole, "Object was not read");
         System.out.println("Reading database is succeeded");
-        someUserRoleJDBC.deleteUserRoleParametric(someInsertUserRole);
+        someUserRoleDAO.deleteUserRole(someInsertUserRole);
     }
 
     @Test
     @DisplayName("Update to the database")
     void updateUserTest() {
-        when(someUserRoleJDBC.readUserRoleParametric(someUpdateUserRole.id)).thenReturn(someUpdateUserRole);
-        someUserRoleJDBC.addUserRoleParametric(someInsertUserRole);
-        someUserRoleJDBC.updateUserParametric(someUpdateUserRole);
-        someReadUserRole = someUserRoleJDBC.readUserRoleParametric(someUpdateUserRole.id);
+        when(someUserRoleDAO.readUserRole(someUpdateUserRole.id)).thenReturn(someUpdateUserRole);
+        someUserRoleDAO.addUserRole(someInsertUserRole);
+        someUserRoleDAO.updateUser(someUpdateUserRole);
+        someReadUserRole = someUserRoleDAO.readUserRole(someUpdateUserRole.id);
         assertEquals(someUpdateUserRole, someReadUserRole, "Object was not deleted");
         System.out.println("Updating database is succeeded");
-        someUserRoleJDBC.deleteUserRoleParametric(someUpdateUserRole);
+        someUserRoleDAO.deleteUserRole(someUpdateUserRole);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteUserRoleTest() {
-        when(someUserRoleJDBC.readUserRoleParametric(someUpdateUserRole.id)).thenReturn(null);
-        someUserRoleJDBC.addUserRoleParametric(someUpdateUserRole);
-        someUserRoleJDBC.deleteUserRoleParametric(someUpdateUserRole);
-        someReadUserRole = userRoleJDBC.readUserRoleParametric(someUpdateUserRole.id);
+        when(someUserRoleDAO.readUserRole(someUpdateUserRole.id)).thenReturn(null);
+        someUserRoleDAO.addUserRole(someUpdateUserRole);
+        someUserRoleDAO.deleteUserRole(someUpdateUserRole);
+        someReadUserRole = userRoleDAO.readUserRole(someUpdateUserRole.id);
         assertNotEquals(someUpdateUserRole, someReadUserRole, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }

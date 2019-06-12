@@ -1,5 +1,5 @@
 import jdbc.DBConnector;
-import jdbc.UserJDBC;
+import jdbc.UserDAO;
 import object.User;
 import org.junit.jupiter.api.*;
 import org.mockito.Spy;
@@ -20,18 +20,18 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * Подготовку данных для CRUD операций производить в методе Init использую @Before
  *
  * Задание 2
- * Использую Spy и Mockito создать заглушки для интерфейса JDBC
+ * Использую Spy и Mockito создать заглушки для интерфейса DAO
  */
 
-public class TestUserMockitoJDBC {
+class TestUserMockitoJDBC {
 
-    LocalDate localDate = LocalDate.of(1950, Month.DECEMBER, 30);
+    private LocalDate localDate = LocalDate.of(1950, Month.DECEMBER, 30);
     private User someInsertUser = new User(1, "ABC", localDate, 1, "London", "abra@cadab.ra", "Somebody Insert user");
     private User someUpdateUser = new User(1, "EFG", localDate, 1, "Agraba", "abra@taram.ba", "Somebody Update user");
     private User someReadUser = new User(0, "", localDate, 0, "", "", "");
-    private UserJDBC someUserJDBC = mock(UserJDBC.class);
+    private UserDAO someUserDAO = mock(UserDAO.class);
     @Spy
-    UserJDBC userJDBC;
+    UserDAO userDAO;
     @Spy
     static Connection connectDataBase;
 
@@ -42,7 +42,7 @@ public class TestUserMockitoJDBC {
 
     @BeforeEach
     void beforeEach() {
-        this.userJDBC = new UserJDBC(connectDataBase);
+        this.userDAO = new UserDAO(connectDataBase);
         this.someInsertUser.id = 1;
     }
 
@@ -56,43 +56,43 @@ public class TestUserMockitoJDBC {
     @Test
     @DisplayName("Create in the database")
     void createUserTest() {
-        when(someUserJDBC.readUserParametric(someInsertUser.id)).thenReturn(someInsertUser);
-        someUserJDBC.addUserParametric(someInsertUser);
-        someReadUser = someUserJDBC.readUserParametric(someInsertUser.id);
+        when(someUserDAO.readUser(someInsertUser.id)).thenReturn(someInsertUser);
+        someUserDAO.addUser(someInsertUser);
+        someReadUser = someUserDAO.readUser(someInsertUser.id);
         assertEquals(someInsertUser, someReadUser, "Object was not created");
-        someUserJDBC.deleteUserParametric(someInsertUser);
+        someUserDAO.deleteUser(someInsertUser);
     }
 
     @Test
     @DisplayName("Read from the database")
     void readUserTest() {
-        when(someUserJDBC.readUserParametric(someInsertUser.id)).thenReturn(someInsertUser);
-        someUserJDBC.addUserParametric(someInsertUser);
-        someReadUser = someUserJDBC.readUserParametric(someInsertUser.id);
-        assertEquals(true, someReadUser.equals(someInsertUser), "Object was not read");
+        when(someUserDAO.readUser(someInsertUser.id)).thenReturn(someInsertUser);
+        someUserDAO.addUser(someInsertUser);
+        someReadUser = someUserDAO.readUser(someInsertUser.id);
+        assertEquals(someInsertUser, someReadUser, "Object was not read");
         System.out.println("Reading database is succeeded");
-        someUserJDBC.deleteUserParametric(someInsertUser);
+        someUserDAO.deleteUser(someInsertUser);
     }
 
     @Test
     @DisplayName("Update to the database")
     void updateUserTest() {
-        when(someUserJDBC.readUserParametric(someUpdateUser.id)).thenReturn(someUpdateUser);
-        someUserJDBC.addUserParametric(someInsertUser);
-        someUserJDBC.updateUserParametric(someUpdateUser);
-        someReadUser = someUserJDBC.readUserParametric(someUpdateUser.id);
+        when(someUserDAO.readUser(someUpdateUser.id)).thenReturn(someUpdateUser);
+        someUserDAO.addUser(someInsertUser);
+        someUserDAO.updateUser(someUpdateUser);
+        someReadUser = someUserDAO.readUser(someUpdateUser.id);
         assertEquals(someUpdateUser, someReadUser, "Object was not deleted");
         System.out.println("Updating database is succeeded");
-        someUserJDBC.deleteUserParametric(someUpdateUser);
+        someUserDAO.deleteUser(someUpdateUser);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteUserTest() {
-        when(someUserJDBC.readUserParametric(someUpdateUser.id)).thenReturn(null);
-        someUserJDBC.addUserParametric(someUpdateUser);
-        userJDBC.deleteUserParametric(someUpdateUser);
-        someReadUser = someUserJDBC.readUserParametric(someUpdateUser.id);
+        when(someUserDAO.readUser(someUpdateUser.id)).thenReturn(null);
+        someUserDAO.addUser(someUpdateUser);
+        userDAO.deleteUser(someUpdateUser);
+        someReadUser = someUserDAO.readUser(someUpdateUser.id);
         assertNotEquals(someUpdateUser, someReadUser, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }

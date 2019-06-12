@@ -1,4 +1,4 @@
-package object;
+package object.role;
 
 import java.util.Objects;
 
@@ -30,5 +30,6 @@ public class Role {
     public int hashCode() {
         return Objects.hash(id, name, description);
     }
+
 }
 

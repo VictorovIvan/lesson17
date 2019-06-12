@@ -1,6 +1,7 @@
 import jdbc.DBConnector;
-import jdbc.RoleJDBC;
-import object.Role;
+import jdbc.RoleDAO;
+import object.role.Name;
+import object.role.Role;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
@@ -19,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * Задание 2
  * Использую Spy и Mockito создать заглушки для интерфейса JDBC
  */
-public class TestRoleJDBC {
+class TestRoleJDBC {
     private Role someInsertRole = new Role(1, "Administration", "Some description about Administration");
-    private Role someUpdateRole = new Role(1, "Billing", "Some update description about Administration");
+    private Role someUpdateRole = new Role(1, "Billing", "Some update description about Billing");
     private Role someReadRole = new Role(0, "", "");
 
-    RoleJDBC roleJDBC;
-    static Connection connectDataBase;
+    private RoleDAO RoleDAO;
+    private static Connection connectDataBase;
 
     @BeforeAll
     static void init() {
@@ -34,7 +35,7 @@ public class TestRoleJDBC {
 
     @BeforeEach
     void beforeEach() {
-        this.roleJDBC = new RoleJDBC(connectDataBase);
+        this.RoleDAO = new RoleDAO(connectDataBase);
         this.someInsertRole.id = 1;
     }
 
@@ -48,40 +49,40 @@ public class TestRoleJDBC {
     @Test
     @DisplayName("Create in the database")
     void createRoleTest() {
-        roleJDBC.addRoleParametric(someInsertRole);
-        someReadRole = roleJDBC.readRoleParametric(someInsertRole.id);
+        RoleDAO.addRoleParametric(someInsertRole, Name.Administration);
+        someReadRole = RoleDAO.readRole(someInsertRole.id);
         assertEquals(someInsertRole, someReadRole, "Object was not created");
         System.out.println("Insert to database is succeeded");
-        roleJDBC.deleteRoleParametric(someInsertRole);
+        RoleDAO.deleteRole(someInsertRole);
     }
 
     @Test
     @DisplayName("Read from the database")
     void readRoleTest() {
-        roleJDBC.addRoleParametric(someInsertRole);
-        someReadRole = roleJDBC.readRoleParametric(someInsertRole.id);
+        RoleDAO.addRoleParametric(someInsertRole, Name.Administration);
+        someReadRole = RoleDAO.readRole(someInsertRole.id);
         assertEquals(someInsertRole, someReadRole, "Object was not read");
         System.out.println("Reading database is succeeded");
-        roleJDBC.deleteRoleParametric(someInsertRole);
+        RoleDAO.deleteRole(someInsertRole);
     }
 
     @Test
     @DisplayName("Update to the database")
     void updateRoleTest() {
-        roleJDBC.addRoleParametric(someInsertRole);
-        roleJDBC.updateRoleParametric(someUpdateRole);
-        someReadRole = roleJDBC.readRoleParametric(someUpdateRole.id);
-        assertEquals(someUpdateRole, someReadRole, "Object was not deleted");
+        RoleDAO.addRoleParametric(someInsertRole, Name.Administration);
+        RoleDAO.updateRoleParametric(someUpdateRole, Name.Billing);
+        someReadRole = RoleDAO.readRole(someUpdateRole.id);
+        assertEquals(someUpdateRole, someReadRole, "Object was not updated");
         System.out.println("Updating database is succeeded");
-        roleJDBC.deleteRoleParametric(someUpdateRole);
+        RoleDAO.deleteRole(someUpdateRole);
     }
 
     @Test
     @DisplayName("Delete row from the database")
     void deleteRoleTest() {
-        roleJDBC.addRoleParametric(someInsertRole);
-        roleJDBC.deleteRoleParametric(someInsertRole);
-        someReadRole = roleJDBC.readRoleParametric(someInsertRole.id);
+        RoleDAO.addRoleParametric(someInsertRole, Name.Administration);
+        RoleDAO.deleteRole(someInsertRole);
+        someReadRole = RoleDAO.readRole(someInsertRole.id);
         assertNotEquals(someInsertRole, someReadRole, "Object was not deleted");
         System.out.println("Deleting row in database is succeeded");
     }
